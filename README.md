@@ -41,3 +41,20 @@ BOM for the prototype:
 - 12V to 3.3V DC-DC supply module
 
 ![Prototype HW](/doc/prototype_bb.png)
+
+
+## Experiments
+
+Some initial data first with no heat exchanger:
+![No heat exchanger](/doc/no_heat_exchanger.png)
+
+Then I made a test with a stack of copper pipes:
+![copper pipes experiment](/doc/copper_pipes.jpg)
+
+That gave the following improvement to the in/out air:
+![Copper pipe heat exchanger](/doc/stack_of_coper_pipes.png)
+
+And last is with the ceramic heat exchanger:
+![Ceramic heat exchanger](/doc/ceramic_heat_exchanger.png)
+
+As can be seen from the temperature curves the delta is significantly higher when the ceramic heat exchanger is used.
