@@ -29,3 +29,15 @@ So my design uses one fan on each side of the heat exchanger pushing air in or o
 To control the fans and measure the temperatures a wifi enabled micro-controller was added. The prototype uses a raspberry pico W for this, with code in micropython.
 
 
+BOM for the prototype:
+- [Ceramic heat exchanger](https://www.aliexpress.com/w/wholesale-ceramic-heat-exchanger.html?spm=a2g0o.tm1000006196.search.0)
+- Raspberry pico W
+- Noctua NF-S12A FLX 120mm fan.
+- FDP8880 Mosfet, Power Field-Effect Transistor.
+- 10k termistor.
+- 10k resistor.
+- Breadboard
+- Dupont cables
+- 12V to 3.3V DC-DC supply module
+
+![Prototype HW](/doc/prototype_bb.png)
