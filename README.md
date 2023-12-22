@@ -42,6 +42,8 @@ BOM for the prototype:
 
 ![Prototype HW](/doc/prototype_bb.png)
 
+![prototype](/doc/prototype1.jpg)
+![prototype](/doc/prototype2.jpg)
 
 ## Experiments
 
