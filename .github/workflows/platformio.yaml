@@ -21,4 +21,4 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Build PlatformIO Project wemos d1 mini
-        run: pio run --project-dir sw/platformio --environment d1_mini
+        run: pio run --project-dir sw/platformio/heatexchanger --environment d1_mini
