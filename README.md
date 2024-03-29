@@ -1,3 +1,5 @@
+[![PlatformIO CI](https://github.com/sverrham/heatexchanger/actions/workflows/platformio.yaml/badge.svg)](https://github.com/sverrham/heatexchanger/actions/workflows/platformio.yaml)
+
 # Heat exchanger
 Heat exchanger design and implementation for a single vent solution
 
