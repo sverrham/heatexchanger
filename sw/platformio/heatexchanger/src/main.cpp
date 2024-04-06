@@ -35,6 +35,10 @@ boolean mqttEnabled;
 int fanSpeed;
 unsigned long fanCycleTime;   
 
+struct sensorStruct {
+    int16_t temp_in;
+    int16_t temp_out;
+} ;
 
 void notFound(AsyncWebServerRequest *request) {
     request->send(404, "text/plain", "Not found");
@@ -103,25 +107,15 @@ void publishMQTT(JsonDocument doc, String topic_dev) {
     Serial.println("Published message: "+ topic_dev + String(payload));
 }
 
-// void sendMQTT(SensirionMeasurement data) {
-//     JsonDocument doc;
+void sendMQTT(sensorStruct data) {
+    JsonDocument doc;
   
-//     // Send the sensirion data, to environment/sensirion/technical/
-//     // String topic_dev = "environment/sensirion/garage";
+    doc["temp_in"] = data.temp_in;
+    doc["temp_out"] = data.temp_out;
 
-//     doc["pm1p0"] = data.massConcentrationPm1p0;
-//     doc["pm2p5"] = data.massConcentrationPm2p5;
-//     doc["pm4p0"] = data.massConcentrationPm4p0;
-//     doc["pm10p0"] = data.massConcentrationPm10p0;
-//     doc["humidity"] = data.ambientHumidity;
-//     doc["temperature"] = data.ambientTemperature;
-//     doc["vocIndex"] = data.vocIndex;
-//     doc["noxIndex"] = data.noxIndex;
-
-//     publishMQTT(doc, stateTopic);
-    
-//     sensordata = doc;
-// }
+    publishMQTT(doc, stateTopic);
+    sensordata = doc;
+}
 
 void reconnectMQTT() {
     String mac_addr = WiFi.macAddress();
@@ -278,6 +272,7 @@ enum FanDirection {
     INN, OUT
 };
 
+
 void loop() {
     // These will be configurable
     
@@ -287,9 +282,9 @@ void loop() {
     unsigned long currentMillis = millis();
     unsigned long currentMillisFan = millis();
     // SensirionMeasurement data;
-    int16_t results;
+    int16_t result;
     float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
-
+    struct sensorStruct data;
 
     if (mqttEnabled) {
         mqttClient.loop();
@@ -299,18 +294,18 @@ void loop() {
         //restart this TIMER
         previousMillis = currentMillis;
        
-        // data = readSen5xData();
+        result = ads.readADC_SingleEnded(0);
+        data.temp_in = calc_temp(result * multiplier);
         
-
-        results = ads.readADC_Differential_0_1();
-        Serial.print("Differential: "); Serial.print(results); Serial.print("("); Serial.print(results * multiplier); Serial.println("mV)");
-
-        float temp = calc_temp(results * multiplier);
-        Serial.println("Temp: " + String(temp));
+        result = ads.readADC_SingleEnded(1);
+        data.temp_out = calc_temp(result * multiplier);
+        
+        Serial.println("Temp: " + String(data.temp_in));
+        Serial.println("Temp: " + String(data.temp_out));
 
         if (mqttEnabled) {
             reconnectMQTT();
-            // sendMQTT(data);
+            sendMQTT(data);
         }
     }
 
