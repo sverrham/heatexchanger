@@ -18,7 +18,6 @@ Preferences prefs;
 AsyncWebServer server(80);
 DNSServer dns;
 
-
 Adafruit_ADS1115 ads;
 
 JsonDocument sensordata;
@@ -36,8 +35,8 @@ int fanSpeed;
 unsigned long fanCycleTime;   
 
 struct sensorStruct {
-    int16_t temp_in;
-    int16_t temp_out;
+    float temp_in;
+    float temp_out;
 } ;
 
 void notFound(AsyncWebServerRequest *request) {
@@ -158,7 +157,7 @@ float calc_temp(float Vo) {
   T = T - 273.15;
   
   // Serial.print("temp: ");
-  Serial.print(T);
+//   Serial.print(T);
   return T;
 }
 
@@ -260,6 +259,7 @@ void setup() {
         Serial.println("Failed to initialize ADS.");
         while (1);
     }
+    ads.setGain(GAIN_ONE);
 
     pinMode(D3, OUTPUT);
     pinMode(D4, OUTPUT);
@@ -281,9 +281,10 @@ void loop() {
     static unsigned long previousMillisFan = 0;
     unsigned long currentMillis = millis();
     unsigned long currentMillisFan = millis();
-    // SensirionMeasurement data;
     int16_t result;
-    float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
+    float volt;
+    // float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
+    float multiplier = 0.125F; /* ADS1115  @ +/- 4.096V gain (16-bit results) */
     struct sensorStruct data;
 
     if (mqttEnabled) {
@@ -293,13 +294,15 @@ void loop() {
     if (currentMillis - previousMillis >= 1000) {
         //restart this TIMER
         previousMillis = currentMillis;
-       
+        
         result = ads.readADC_SingleEnded(0);
-        data.temp_in = calc_temp(result * multiplier);
-        
+        volt = (result * multiplier)/1000;
+        data.temp_in = calc_temp(volt);
+
         result = ads.readADC_SingleEnded(1);
-        data.temp_out = calc_temp(result * multiplier);
-        
+        volt = (result * multiplier)/1000;
+        data.temp_out = calc_temp(volt);
+
         Serial.println("Temp: " + String(data.temp_in));
         Serial.println("Temp: " + String(data.temp_out));
 
